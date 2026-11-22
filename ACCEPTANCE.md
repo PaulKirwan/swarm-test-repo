@@ -26,6 +26,7 @@ opencode-go, reached through the Workbench Model Gateway.
 
 ```text
 specs/spec.live/spec.yaml
+specs/spec.live/README.md
 specs/spec.live/diagrams/context.mmd
 specs/spec.live/diagrams/containers.dsl
 specs/spec.live/diagrams/components.dsl
