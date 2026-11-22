@@ -1,0 +1,130 @@
+schemaVersion: 1
+id: spec.live
+title: Live greeting acceptance specification
+version: 5
+status: draft
+
+summary: >
+  Add a small greet(name) function to the fixture and cover it with a unit test.
+
+goals:
+  - id: goal.greet
+    statement: Return a greeting for a supplied name.
+
+nonGoals:
+  - id: nongoal.ui
+    statement: Do not add a user interface.
+
+constraints:
+  - id: constraint.tests
+    statement: The fixture's npm test command must pass.
+
+assets:
+  - id: actor.user
+    type: actor
+    name: User
+    description: A person using the greeting function.
+
+  - id: system.fixture
+    type: system
+    name: Fixture
+    description: The minimal Swarm test repository.
+
+  - id: container.fixture
+    type: container
+    name: Fixture application
+    parent: system.fixture
+    technology: Node.js
+
+  - id: component.greet
+    type: component
+    name: greet(name)
+    parent: container.fixture
+    description: Returns a personalized greeting.
+
+  - id: component.test
+    type: component
+    name: Greeting tests
+    parent: container.fixture
+    description: Unit tests for the greeting function.
+
+relationships:
+  - id: rel.user.fixture
+    from: actor.user
+    to: system.fixture
+    type: uses
+    description: The user calls the fixture's greeting function.
+
+  - id: rel.greet.fixture
+    from: component.greet
+    to: system.fixture
+    type: implements
+    description: The fixture contains the greeting function.
+
+  - id: rel.test.fixture
+    from: component.test
+    to: system.fixture
+    type: tests
+    description: The fixture tests the greeting function.
+
+views:
+  - id: view.context
+    type: context
+    format: mermaid
+    source: diagrams/context.mmd
+    parent: null
+    elements:
+      - diagramId: user
+        asset: actor.user
+      - diagramId: fixture
+        asset: system.fixture
+    relationships:
+      - diagramId: user_fixture
+        relationship: rel.user.fixture
+
+  - id: view.containers
+    type: container
+    format: dsl
+    source: diagrams/containers.dsl
+    parent: view.context
+    elements:
+      - diagramId: fixture_app
+        asset: container.fixture
+    relationships: []
+
+  - id: view.components
+    type: component
+    format: dsl
+    source: diagrams/components.dsl
+    parent: view.containers
+    elements:
+      - diagramId: greet
+        asset: component.greet
+      - diagramId: tests
+        asset: component.test
+    relationships:
+      - diagramId: greet_fixture
+        relationship: rel.greet.fixture
+      - diagramId: test_fixture
+        relationship: rel.test.fixture
+
+requirements:
+  - id: req.greet
+    title: Greet by name
+    statement: When a name is supplied, the fixture shall return a personalized greeting.
+    priority: must
+    tracesTo:
+      - actor.user
+      - view.context
+      - component.greet
+    acceptance:
+      - id: check.greet
+        statement: Given the name World, greet returns Hello, World!
+
+decisions:
+  - id: dec.tests
+    title: Use the existing test runner
+    status: accepted
+    rationale: The fixture already defines npm test with node --test.
+    tracesTo:
+      - component.test
