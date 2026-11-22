@@ -1,0 +1,78 @@
+schemaVersion: 1
+id: spec.healthz
+title: Health Endpoint Specification
+version: 7
+status: draft
+assets:
+  - id: actor.operator
+    type: actor
+    name: Operator
+  - id: system.fixture
+    type: system
+    name: Fixture System
+  - id: container.service
+    type: container
+    name: Service
+    parent: system.fixture
+    technology: Node.js
+  - id: component.healthz
+    type: component
+    name: Healthz
+    parent: container.service
+relationships:
+  - id: rel.operator.fixture
+    from: actor.operator
+    to: system.fixture
+    type: uses
+    description: The operator calls the fixture service.
+  - id: rel.healthz.service
+    from: component.healthz
+    to: container.service
+    type: implements
+    description: The service exposes the healthz endpoint.
+views:
+  - id: view.context
+    type: context
+    format: mermaid
+    source: diagrams/context.mmd
+    parent: null
+    elements:
+      - diagramId: operator
+        asset: actor.operator
+      - diagramId: fixture
+        asset: system.fixture
+    relationships:
+      - diagramId: operator_fixture
+        relationship: rel.operator.fixture
+  - id: view.containers
+    type: container
+    format: mermaid
+    source: diagrams/containers.mmd
+    parent: view.context
+    elements:
+      - diagramId: service
+        asset: container.service
+    relationships: []
+  - id: view.components
+    type: component
+    format: mermaid
+    source: diagrams/components.mmd
+    parent: view.containers
+    elements:
+      - diagramId: healthz
+        asset: component.healthz
+    relationships:
+      - diagramId: healthz_service
+        relationship: rel.healthz.service
+requirements:
+  - id: req.healthz
+    title: Health endpoint
+    statement: When called, the service shall return its health status.
+    priority: must
+    tracesTo:
+      - actor.operator
+      - view.context
+      - component.healthz
+    acceptance:
+      - id: check.healthz
+        statement: GET /healthz returns status ok.

@@ -1,0 +1,4 @@
+flowchart TB
+  healthz["component.healthz: Healthz"]
+  service["container.service: Service"]
+  healthz -- healthz_service --> service
