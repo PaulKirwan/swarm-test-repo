@@ -77,7 +77,7 @@ fixes were:
 | --- | --- | --- | --- |
 | `spec.health@1` | failed | Workbench Model Gateway not configured. | Restored the controller to the local gateway. |
 | `spec.healthz@1`, `@2` | failed at 24 turns | The empty spec package did not exist, so `list_files .` failed and the model kept retrying. | Create the package directory before the model starts. |
-| `spec.healthz@3` | failed after 120 s | The harness broker request timeout was 120 s; Beam Free took longer. | Set `SWARM_HARNESS_REQUEST_TIMEOUT_SEC=600` and expose the extension setting. |
+| `spec.healthz@3` | failed after 120 s | The harness broker request timeout was 120 s; Beam Free took longer. | Set the harness timeout to 600 s and the controller timeout to 900 s in the live run; Compose now defaults both to 600 s. |
 | `spec.healthz@4` | failed at 64 turns | The package still did not exist; the prompt had no version or concrete YAML shape. | Create the package, pass `spec id@version`, and add a valid prompt example. |
 | `spec.healthz@5` | failed at 64 turns | Package still missing before the directory fix. | Create the package before the model call. |
 | `spec.healthz@6` | failed at 64 turns | Package existed but the prompt still lacked the target version and a concrete YAML shape, so the model kept listing. | Pass the version and add the valid YAML example. |
