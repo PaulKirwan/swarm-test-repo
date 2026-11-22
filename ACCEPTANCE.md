@@ -68,6 +68,29 @@ b22dd8b Merge task_42942f5d-748e-4ef4-92d1-872e5d1a9209: Implement greet and its
 c2d7cc3 feat: Implement greet and its unit test
 ```
 
+## Spec-builder healthz diagnosis
+
+The first `spec.healthz` builds failed before writing files. The causes and
+fixes were:
+
+| Attempt | Result | Cause | Fix |
+| --- | --- | --- | --- |
+| `spec.health@1` | failed | Workbench Model Gateway not configured. | Restored the controller to the local gateway. |
+| `spec.healthz@1`, `@2` | failed at 24 turns | The empty spec package did not exist, so `list_files .` failed and the model kept retrying. | Create the package directory before the model starts. |
+| `spec.healthz@3` | failed after 120 s | The harness broker request timeout was 120 s; Beam Free took longer. | Set `SWARM_HARNESS_REQUEST_TIMEOUT_SEC=600` and expose the extension setting. |
+| `spec.healthz@4` | failed at 64 turns | The package still did not exist; the prompt had no version or concrete YAML shape. | Create the package, pass `spec id@version`, and add a valid prompt example. |
+| `spec.healthz@5` | failed at 64 turns | Package still missing before the directory fix. | Create the package before the model call. |
+| `spec.healthz@6` | failed at 64 turns | Package existed but the prompt still lacked the target version and a concrete YAML shape, so the model kept listing. | Pass the version and add the valid YAML example. |
+| `spec.healthz@7` | draft | Strict validation passed with no errors or warnings. | Recorded as `spec_068a38bf-1a4c-4bc7-80f6-6baea46aafe9`. |
+
+The resulting package is [specs/spec.healthz](specs/spec.healthz). It contains
+`spec.yaml`, a human README with three Mermaid views and source links, and the
+context, containers and components diagrams. It is a draft pending human
+approval.
+
+The product changes are PRs #61 (request timeout) and #62 (package creation,
+controller version, prompt) in `local-ai-tools`.
+
 ## Notes
 
 - The spec package was authored and strictly validated before the run; the
