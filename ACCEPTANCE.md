@@ -89,7 +89,9 @@ context, containers and components diagrams. It is a draft pending human
 approval.
 
 The product changes are PRs #61 (request timeout) and #62 (package creation,
-controller version, prompt) in `local-ai-tools`.
+controller version, prompt) in `local-ai-tools`. PR #63 tightens the version
+parser, uses workspace-relative `specs/<id>/` paths in the prompt and
+coordinates the controller timeout with the harness timeout.
 
 ## Notes
 
